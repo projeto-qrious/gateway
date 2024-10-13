@@ -5,7 +5,6 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { RmqContext } from '@nestjs/microservices';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { FirebaseAuthGuard } from './firebase-auth.guard';
 import { FirebaseService } from '../firebase/firebase.service';

@@ -7,7 +7,6 @@ import {
   Request,
   Get,
   Param,
-  InternalServerErrorException,
   ForbiddenException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
