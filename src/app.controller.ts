@@ -7,6 +7,8 @@ import {
   Request,
   Get,
   Param,
+  InternalServerErrorException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -82,6 +84,39 @@ export class GatewayController {
   }
 
   @UseGuards(RolesGuard)
+  @Role('SPEAKER', 'ATTENDEE')
+  @Get('sessions/user/:userId')
+  async getUserSessions(@Param('userId') userId: string, @Request() req) {
+    const token = req.headers.authorization.split('Bearer ')[1];
+    const role = req.user.role;
+
+    if (req.user.uid !== userId) {
+      throw new ForbiddenException(
+        'Você não tem permissão para acessar estas sessões.',
+      );
+    }
+
+    return this.sessionsClient.send(
+      { cmd: 'get-user-sessions' },
+      { userId, token, role },
+    );
+  }
+
+  @UseGuards(RolesGuard)
+  @Role('SPEAKER')
+  @Get('sessions/speaker/createdSessions')
+  async getSessionsBySpeaker(@Request() req) {
+    const userId = req.user.uid;
+    const token = req.headers.authorization.split('Bearer ')[1];
+    const role = req.user.role;
+
+    return this.sessionsClient.send(
+      { cmd: 'get-sessions-by-speaker' },
+      { userId, token, role },
+    );
+  }
+
+  @UseGuards(RolesGuard)
   @Role('SPEAKER')
   @Get('sessions/:sessionId/attendees')
   async getSessionAttendees(
@@ -126,6 +161,24 @@ export class GatewayController {
     return this.sessionsClient.send(
       { cmd: 'get-questions' },
       { userId, token, role },
+    );
+  }
+
+  @UseGuards(RolesGuard)
+  @Role('SPEAKER', 'ATTENDEE')
+  @Get('sessions/:sessionId/questions/:questionId')
+  async getQuestionDetails(
+    @Param('sessionId') sessionId: string,
+    @Param('questionId') questionId: string,
+    @Request() req,
+  ) {
+    const userId = req.user.uid;
+    const token = req.headers.authorization.split('Bearer ')[1];
+    const role = req.user.role;
+
+    return this.sessionsClient.send(
+      { cmd: 'get-question-details' },
+      { sessionId, questionId, userId, token, role },
     );
   }
 
