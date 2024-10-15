@@ -4,7 +4,7 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { FirebaseService } from '../../src/firebase/firebase.service';
+import { FirebaseService } from '../firebase/firebase.service';
 import { RmqContext } from '@nestjs/microservices';
 
 @Injectable()

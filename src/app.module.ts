@@ -15,10 +15,7 @@ import { FirebaseService } from './firebase/firebase.service';
         name: 'AUTH_SERVICE',
         transport: Transport.RMQ,
         options: {
-          urls: [
-            process.env.RABBITMQ_URL ||
-              'amqp://rabbitmq-3-management-pr9r.onrender.com:5672',
-          ],
+          urls: [process.env.RABBITMQ_URL],
           queue: 'auth_queue',
           queueOptions: { durable: true },
         },
@@ -27,10 +24,7 @@ import { FirebaseService } from './firebase/firebase.service';
         name: 'SESSIONS_SERVICE',
         transport: Transport.RMQ,
         options: {
-          urls: [
-            process.env.RABBITMQ_URL ||
-              'amqp://rabbitmq-3-management-pr9r.onrender.com:5672',
-          ],
+          urls: [process.env.RABBITMQ_URL],
           queue: 'sessions_queue',
           queueOptions: { durable: true },
         },
