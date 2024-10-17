@@ -198,4 +198,22 @@ export class GatewayController {
       { sessionId, questionId, userId, token, role },
     );
   }
+
+  @UseGuards(RolesGuard)
+  @Role('SPEAKER')
+  @Post('sessions/:sessionId/questions/:questionId/answer')
+  async markQuestionAsAnswered(
+    @Param('sessionId') sessionId: string,
+    @Param('questionId') questionId: string,
+    @Request() req,
+  ) {
+    const userId = req.user.uid;
+    const token = req.headers.authorization.split('Bearer ')[1];
+    const role = req.user.role;
+
+    return this.sessionsClient.send(
+      { cmd: 'mark-question-as-answered' },
+      { sessionId, questionId, userId, token, role },
+    );
+  }
 }
