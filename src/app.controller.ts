@@ -8,6 +8,8 @@ import {
   Get,
   Param,
   ForbiddenException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -29,7 +31,20 @@ export class GatewayController {
 
   @Post('auth/register')
   async register(@Body() createUserDto: CreateUserDto) {
-    return this.authClient.send({ cmd: 'register' }, createUserDto);
+    try {
+      const response = await this.authClient
+        .send({ cmd: 'register' }, createUserDto)
+        .toPromise();
+      return response;
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: error.message,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   @Post('auth/login')
